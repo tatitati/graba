@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta
 from enum import Enum
 from inspect import Parameter
 
+import exrex
 from dateutil.parser import parse
 
 class Any():
@@ -23,6 +24,10 @@ class Any():
                 items.append(x)
 
         return random.choice(items)
+
+
+    def string_from_regex(self, regex: str):
+        exrex.getone(regex)
 
 
     def listOf(self, factoryFunction, min: int =1, max: int = 5):
