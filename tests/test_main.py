@@ -24,6 +24,16 @@ def test_positiveNumber():
     #     {'age': 9656, 'name': 'ojizqxl'}
     # ]
 
+def test_any_of():
+    from enum import Enum
+
+    class Color(Enum):
+        RED = "reddd"
+        GREEN = "greeen"
+        BLUE = "blueee"
+
+    result = any.of([Color])
+    print(result) # Color.BLUE
 
 def test_anyFloat():
     result = any.anyFloat()

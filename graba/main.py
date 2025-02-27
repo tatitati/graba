@@ -18,7 +18,8 @@ class Any():
         for x in options:
             if isinstance(Enum, type(x)):
                 for member in x:
-                    # items.append(member.value)
+                    # with enums, we return the enum, not the string value
+                    # this makes easier to cascade values all around the code when testing
                     items.append(member)
             else:
                 items.append(x)
