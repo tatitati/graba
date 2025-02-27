@@ -37,6 +37,10 @@ def test_anyWord():
     result = any.word()
     print(result) # lpiqwzwyvcxuxbsaijdgtnvhhluj
 
+def test_any_string_from_regex():
+    result = any.string_from_regex(r'[A-Z]\d[A-Z] \d[A-Z]\d')
+    print(result) # U3V 2Z7
+
 def test_subsetOf():
     result = any.subsetOf(min=1, max=4, items=["a", "b", "c", "d", "e", "f"])
     print(result) # ['d', 'e', 'b']
@@ -68,35 +72,3 @@ def test_email():
 def test_digits():
     print(any.digits(min=3, max=7)) # 53081
     print(any.digits(min=8, max=8)) # 64746287
-
-def test_object_like():
-    class Car:
-        def __init__(self, color: str, engine_capacity: int, brand: str):
-            self.color = color
-            self.engine_capacity = engine_capacity
-            self.brand = brand
-
-        def __repr__(self):
-            return f"Car(color='{self.color}', engine_capacity='{self.engine_capacity}', brand='{self.brand}')"
-
-    class Person:
-        def __init__(self,
-                     colors: List[str],
-                     cars: List[Car],
-                     name: Optional[str] = "asdf",
-                     age: int = None,
-                 ):
-            self.colors = colors
-            self.name = name
-            self.age = age
-            self.cars = cars
-
-        def __repr__(self):
-            return f"Person(colors='{self.colors}', name='{self.name}', age='{self.age}', cars='{self.cars}')"
-
-    result: Person = any.object_like(Person)
-
-    print(result.colors)
-    print(result.name)
-    print(result.age)
-    print(result.cars)

@@ -26,8 +26,8 @@ class Any():
         return random.choice(items)
 
 
-    def string_from_regex(self, regex: str):
-        exrex.getone(regex)
+    def string_from_regex(self, regex: str) -> str:
+        return exrex.getone(regex)
 
 
     def listOf(self, factoryFunction, min: int =1, max: int = 5):
