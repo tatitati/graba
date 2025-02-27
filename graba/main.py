@@ -1,9 +1,7 @@
 import random
 import string
-import typing
 from datetime import date, datetime, timedelta
 from enum import Enum
-from inspect import Parameter
 
 import exrex
 from dateutil.parser import parse
