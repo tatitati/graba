@@ -2,6 +2,7 @@ import random
 import string
 import typing
 from datetime import date, datetime, timedelta
+from enum import Enum
 from inspect import Parameter
 
 from dateutil.parser import parse
@@ -12,7 +13,16 @@ class Any():
         self._mode_datadirty = mode_datadirty
 
     def of(self, options: list):
-        return random.choice(options)
+        items = []
+        for x in options:
+            if isinstance(Enum, type(x)):
+                for member in x:
+                    # items.append(member.value)
+                    items.append(member)
+            else:
+                items.append(x)
+
+        return random.choice(items)
 
 
     def listOf(self, factoryFunction, min: int =1, max: int = 5):
@@ -216,89 +226,3 @@ class Any():
     def email(self) -> str:
         extension = self.of(["es", "com", "net", "co.uk", "io"])
         return f"{self.word()}@{self.word()}.{extension}"
-
-    def object_like(self, class_of_interest):
-        import inspect
-        from typing import get_args
-
-        parameters = inspect.signature(class_of_interest.__init__).parameters
-
-        param_values = {}
-
-        def create_value(param_type: Parameter):
-
-            param_type_annotation = param_type.annotation
-            param_type_default = param_type.default
-
-            if param_type_annotation == int:
-                if param_type_default == inspect.Parameter.empty:  # no default value
-                    return self.anyInt()
-                return self.of([self.anyInt(), param_type_default])
-
-
-            elif param_type_annotation == float:
-                if param_type_default == inspect.Parameter.empty:
-                    return self.anyFloat()
-                return self.of([self.anyFloat(), param_type_default])
-
-            elif param_type_annotation == str:
-                if param_type_default == inspect.Parameter.empty:
-                    return self.word()
-                return self.of([self.word(), param_type_default])
-
-            elif param_type_annotation == bool:
-                if param_type_default == inspect.Parameter.empty:
-                    return self.bool()
-                return self.of([self.bool(), param_type_default])
-
-            elif param_type_annotation == datetime:
-                if param_type_default == inspect.Parameter.empty:
-                    return self.dateTime()
-                return self.of([self.dateTime(), param_type_default])
-
-            elif param_type_annotation == date:
-                if param_type_default == inspect.Parameter.empty:
-                    return self.date()
-                return  self.of([self.date(), param_type_default])
-
-            elif typing.get_origin(param_type_annotation) is typing.Union:
-                nested_type: type = get_args(param_type_annotation)[0]
-                return create_value(Parameter(
-                    name=param_type.name,
-                    kind=param_type.kind,
-                    default=param_type_default,
-                    annotation=nested_type
-                ))
-
-            elif typing.get_origin(param_type_annotation) is list:
-                nested_type = get_args(param_type_annotation)[0]
-
-                values = []
-                for i in range(0, self.positiveInt(min=0, max=4)):
-                    values.append(
-                        create_value(
-                            Parameter(
-                                name=param_type.name,
-                                kind=param_type.kind,
-                                annotation=nested_type
-                            )
-                            )
-                    )
-
-                if param_type_default == inspect.Parameter.empty:
-                    return values
-
-                return self.of(values, param_type_default)
-
-            # composite values
-            # ---------------
-            else:
-                return self.object_like(param_type.annotation)
-
-        for param_name, param_type in parameters.items(): # type: str, Parameter
-            if param_name != "self":
-                param_values[param_name] = create_value(
-                    param_type
-                )
-
-        return class_of_interest(**param_values)
